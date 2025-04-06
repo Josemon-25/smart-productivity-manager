@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - Smart Productivity Manager</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Contact Us</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="taskmanager.html">Task Manager</a></li>
+        <li><a href="tasks.html">Summary</a></li>
+        <li><a href="contacts.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="contact-section fade-in">
+    <h2 class="slide-in">Get in Touch</h2>
+    <p class="slide-in">Have questions, feedback, or suggestions? We'd love to hear from you!</p>
+
+    <form id="contactForm" class="contact-form fade-in">
+      <input type="text" id="name" placeholder="Your Name" required />
+      <input type="email" id="email" placeholder="Your Email" required />
+      <textarea id="message" placeholder="Your Message" required></textarea>
+      <button type="submit">Send</button>
+      <p id="contactSuccess" style="color: green; display: none;">Message saved locally!</p>
+    </form>
+  </section>
+
+  <footer>
+    <p>© 2025 Smart Productivity Manager. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

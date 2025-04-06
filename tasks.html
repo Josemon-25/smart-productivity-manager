@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Summary - Smart Productivity Manager</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Task Summary</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="taskmanager.html">Task Manager</a></li>
+        <li><a href="contacts.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="task-manager fade-in">
+    <h2 class="slide-in">Your Completed Tasks</h2>
+
+    <!-- Filter by Date -->
+    <div class="filter-section slide-in">
+      <label for="filterDate">Filter by Date:</label>
+      <input type="date" id="filterDate" onchange="filterTasksByDate()" />
+    </div>
+
+    <!-- Completed Task List -->
+    <ul id="completedTasks" class="fade-in"></ul>
+
+    <!-- Clear History Button -->
+    <button onclick="clearTaskHistory()" class="clear-history-btn slide-in">Clear History</button>
+
+    <!-- Productivity Chart -->
+    <div style="width: 90%; max-width: 700px; margin: 40px auto;" class="fade-in">
+      <canvas id="productivityChart"></canvas>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Smart Productivity Manager</p>
+  </footer>
+
+  <script>
+    function loadTasks() {
+      const completedTasks = JSON.parse(localStorage.getItem("completedTasks")) || [];
+      const list = document.getElementById("completedTasks");
+      list.innerHTML = "";
+
+      completedTasks.forEach(task => {
+        const li = document.createElement("li");
+        li.classList.add("task-item", "completed");
+        li.setAttribute("data-date", task.date);
+        li.textContent = `${task.name} - ${task.time} (${task.date})`;
+        list.appendChild(li);
+      });
+
+      drawProductivityChart();
+    }
+
+    function filterTasksByDate() {
+      const filterDate = document.getElementById("filterDate").value;
+      const completedTasksList = document.getElementById("completedTasks");
+
+      Array.from(completedTasksList.children).forEach(task => {
+        const taskDate = task.getAttribute("data-date");
+        task.style.display = !filterDate || taskDate === filterDate ? "flex" : "none";
+      });
+    }
+
+    function clearTaskHistory() {
+      if (confirm("Are you sure you want to clear all completed task history?")) {
+        localStorage.removeItem("completedTasks");
+        document.getElementById("completedTasks").innerHTML = "";
+        drawProductivityChart();
+      }
+    }
+
+    function drawProductivityChart() {
+      const completedTasks = JSON.parse(localStorage.getItem("completedTasks")) || [];
+      const dailyCounts = {};
+
+      completedTasks.forEach(task => {
+        const date = task.date || "Unknown";
+        dailyCounts[date] = (dailyCounts[date] || 0) + 1;
+      });
+
+      const labels = Object.keys(dailyCounts);
+      const data = Object.values(dailyCounts);
+
+      const ctx = document.getElementById("productivityChart").getContext("2d");
+
+      if (window.productivityChartInstance) {
+        window.productivityChartInstance.destroy();
+      }
+
+      window.productivityChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Completed Tasks per Day",
+            data: data,
+            backgroundColor: "#42a5f5",
+            borderRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1 }
+            }
+          }
+        }
+      });
+    }
+
+    window.onload = loadTasks;
+  </script>
+</body>
+</html>

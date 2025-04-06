@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Manager | Smart Productivity Manager</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="fade-in">
+    <h1>Task Manager</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="taskmanager.html" class="active">Task Manager</a></li>
+        <li><a href="contacts.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Task Input Section -->
+  <section class="task-input-section slide-in">
+    <h2>Add New Task</h2>
+    <input type="text" id="taskName" placeholder="Task Name" />
+    <input type="date" id="taskDate" />
+    <input type="time" id="taskTime" />
+    <button onclick="addTask()">Add Task</button>
+  </section>
+
+  <!-- Task List Section -->
+  <section class="task-lists">
+    <div class="pending-tasks fade-in">
+      <h3>Pending Tasks</h3>
+      <ul id="taskList"></ul>
+    </div>
+    <div class="completed-tasks fade-in">
+      <h3>Completed Tasks</h3>
+      <ul id="completedTasks"></ul>
+    </div>
+  </section>
+
+  <!-- Productivity Score -->
+  <section class="productivity-score fade-in">
+    <h3>Productivity Score: <span id="productivityScore">0</span>/10</h3>
+  </section>
+
+  <!-- Footer -->
+  <footer class="fade-in">
+    <p>&copy; 2025 Smart Productivity Manager</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
