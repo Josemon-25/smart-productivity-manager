@@ -3,52 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Task Manager | Smart Productivity Manager</title>
+  <title>Task Manager - Smart Productivity Manager</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-  <!-- Header -->
-  <header class="fade-in">
+  <header>
     <h1>Task Manager</h1>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="features.html">Features</a></li>
-        <li><a href="task_manager.html">Task Manager</a></li>
- <li><a href="contacts.html">Contact</a></li>
+        <li><a href="tasks.html">Task Summary</a></li>
+        <li><a href="contacts.html">Contact</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- Task Input Section -->
-  <section class="task-input-section slide-in">
-    <h2>Add New Task</h2>
-    <input type="text" id="taskName" placeholder="Task Name" />
-    <input type="date" id="taskDate" />
-    <input type="time" id="taskTime" />
+  <!-- Intro Section -->
+  <section class="task-manager fade-in">
+    <h2 class="slide-in">Manage Your Tasks Efficiently</h2>
+    <p class="slide-in">Add your tasks below, set deadlines, and track progress visually. Tasks are prioritized and color-coded by urgency. Your data is saved for future sessions.</p>
+  </section>
+
+  <!-- Task Input -->
+  <section class="task-input-section fade-in">
+    <input type="text" id="taskName" placeholder="Task name" required />
+    <input type="date" id="taskDate" required />
+    <input type="time" id="taskTime" required />
     <button onclick="addTask()">Add Task</button>
   </section>
 
-  <!-- Task List Section -->
-  <section class="task-lists">
-    <div class="pending-tasks fade-in">
+  <!-- Task Lists -->
+  <section class="task-lists fade-in">
+    <div class="pending-tasks">
       <h3>Pending Tasks</h3>
-      <ul id="taskList"></ul>
+      <div id="pendingList"></div>
     </div>
-    <div class="completed-tasks fade-in">
+
+    <div class="completed-tasks">
       <h3>Completed Tasks</h3>
-      <ul id="completedTasks"></ul>
+      <div id="completedList"></div>
     </div>
   </section>
 
   <!-- Productivity Score -->
-  <section class="productivity-score fade-in">
-    <h3>Productivity Score: <span id="productivityScore">0</span>/10</h3>
-  </section>
+  <div class="productivity-score fade-in" id="productivityScore"></div>
 
-  <!-- Footer -->
-  <footer class="fade-in">
+  <footer>
     <p>&copy; 2025 Smart Productivity Manager</p>
   </footer>
 
