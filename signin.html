@@ -8,21 +8,48 @@
 </head>
 <body>
   <header>
-    <h1>Smart Productivity Manager</h1>
+    <h1>Welcome to Smart Productivity Manager</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="taskmanager.html">Task Manager</a></li>
+        <li><a href="contacts.html">Contact</a></li>
+      </ul>
+    </nav>
   </header>
 
   <section class="signin-section fade-in">
     <h2 class="slide-in">Sign In</h2>
-    <form id="signinForm" class="signin-form">
+    <form class="signin-form slide-in" onsubmit="return handleSignIn(event)">
       <input type="text" id="username" placeholder="Enter your name" required />
       <button type="submit">Sign In</button>
     </form>
   </section>
 
   <footer>
-    <p>© 2025 Smart Productivity Manager</p>
+    <p>&copy; 2025 Smart Productivity Manager</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    function handleSignIn(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      if (username) {
+        localStorage.setItem('spmUser', username);
+        alert(`Welcome, ${username}!`);
+        window.location.href = 'taskmanager.html';
+      }
+    }
+
+    // Redirect to task manager if already signed in
+    window.onload = () => {
+      const existingUser = localStorage.getItem('spmUser');
+      if (existingUser) {
+        window.location.href = 'taskmanager.html';
+      }
+    };
+  </script>
 </body>
 </html>
+
