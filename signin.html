@@ -38,7 +38,7 @@
       if (username) {
         localStorage.setItem('spmUser', username);
         alert(`Welcome, ${username}!`);
-        window.location.href = 'taskmanager.html';
+        window.location.href = 'task_manager.html';
       }
     }
 
@@ -46,7 +46,7 @@
     window.onload = () => {
       const existingUser = localStorage.getItem('spmUser');
       if (existingUser) {
-        window.location.href = 'taskmanager.html';
+        window.location.href = 'task_manager.html';
       }
     };
   </script>
