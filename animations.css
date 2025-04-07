@@ -1,29 +1,72 @@
-/* Fade-in Animation */
-.fade-in {
-    animation: fadeIn 2s ease-in-out;
-}
+/* animations.css */
+/* Reusable Animations for Smart Productivity Manager */
 
+/* Fade In Animation */
 @keyframes fadeIn {
     from {
-        opacity: 0;
+      opacity: 0;
+      transform: translateY(-20px);
     }
     to {
-        opacity: 1;
+      opacity: 1;
+      transform: translateY(0);
     }
-}
-
-/* Slide-up Animation */
-.slide-up {
-    animation: slideUp 1.5s ease-in-out;
-}
-
-@keyframes slideUp {
+  }
+  
+  /* Slide In Animation */
+  @keyframes slideIn {
     from {
-        transform: translateY(50px);
-        opacity: 0;
+      opacity: 0;
+      transform: translateY(50px);
     }
     to {
-        transform: translateY(0);
-        opacity: 1;
+      opacity: 1;
+      transform: translateY(0);
     }
-}
+  }
+  
+  /* Zoom In Animation */
+  @keyframes zoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Fade In Left Animation */
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  /* Utility Classes */
+  .fade-in {
+    animation: fadeIn 1.2s ease-in-out forwards;
+    opacity: 0;
+  }
+  
+  .slide-in {
+    animation: slideIn 1s ease-out forwards;
+    opacity: 0;
+  }
+  
+  .zoom-in {
+    animation: zoomIn 0.8s ease-in-out forwards;
+    opacity: 0;
+  }
+  
+  .fade-in-left {
+    animation: fadeInLeft 1s ease-in-out forwards;
+    opacity: 0;
+  }
+  
