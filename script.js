@@ -1,3 +1,68 @@
+// script.js
+
+document.addEventListener("DOMContentLoaded", function () {
+  const addTaskBtn = document.getElementById("addTaskBtn");
+  const taskInput = document.getElementById("taskInput");
+  const taskDate = document.getElementById("taskDate");
+  const taskTime = document.getElementById("taskTime");
+  const pendingTasksDiv = document.getElementById("pendingTasks");
+
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+  function renderTasks() {
+    pendingTasksDiv.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+      if (!task.completed) {
+        const taskDiv = document.createElement("div");
+        taskDiv.className = "task-item";
+        taskDiv.innerHTML = `
+          ${task.name} - ${task.date} ${task.time}
+          <button class="complete-btn" onclick="completeTask(${index})">✓</button>
+          <button class="delete-btn" onclick="deleteTask(${index})">🗑</button>
+        `;
+        pendingTasksDiv.appendChild(taskDiv);
+      }
+    });
+  }
+
+  addTaskBtn.addEventListener("click", function () {
+    const name = taskInput.value.trim();
+    const date = taskDate.value;
+    const time = taskTime.value;
+
+    if (name && date && time) {
+      const newTask = { name, date, time, completed: false };
+      tasks.push(newTask);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      renderTasks();
+      taskInput.value = "";
+      taskDate.value = "";
+      taskTime.value = "";
+    } else {
+      alert("Please fill in all fields.");
+    }
+  });
+
+  window.completeTask = function (index) {
+    tasks[index].completed = true;
+
+    const completed = JSON.parse(localStorage.getItem("completedTasks")) || [];
+    completed.push(tasks[index]);
+    localStorage.setItem("completedTasks", JSON.stringify(completed));
+
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    renderTasks();
+  };
+
+  window.deleteTask = function (index) {
+    tasks.splice(index, 1);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    renderTasks();
+  };
+
+  renderTasks();
+});
 // ===== USER SESSION CHECK =====
 function checkUser() {
   const username = localStorage.getItem("spmUser");
