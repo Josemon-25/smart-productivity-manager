@@ -1,5 +1,3 @@
-// script.js - Smart Productivity Manager
-
 // ===== User Sign-In Management =====
 function saveUser() {
   const username = document.getElementById("username").value.trim();
@@ -18,7 +16,6 @@ function checkUser() {
   }
 }
 
-// Call checkUser on all pages except signin
 if (!window.location.href.includes("signin.html")) {
   checkUser();
 }
@@ -65,16 +62,16 @@ function addTask() {
 }
 
 function renderTasks() {
-  pendingTasksContainer.innerHTML = "";
-  completedTasksContainer.innerHTML = "";
+  if (pendingTasksContainer) pendingTasksContainer.innerHTML = "";
+  if (completedTasksContainer) completedTasksContainer.innerHTML = "";
 
-  tasks.sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time));
+  tasks.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
 
   tasks.forEach(task => {
     const taskEl = document.createElement("div");
     taskEl.classList.add("task-item");
     const now = new Date();
-    const taskTime = new Date(task.date + 'T' + task.time);
+    const taskTime = new Date(`${task.date}T${task.time}`);
     const diff = taskTime - now;
 
     if (task.completed) {
@@ -95,9 +92,9 @@ function renderTasks() {
       </div>
     `;
 
-    if (task.completed) {
+    if (task.completed && completedTasksContainer) {
       completedTasksContainer.appendChild(taskEl);
-    } else {
+    } else if (!task.completed && pendingTasksContainer) {
       pendingTasksContainer.appendChild(taskEl);
     }
   });
@@ -134,21 +131,28 @@ function updateProductivity() {
 
 function notifyUpcomingTasks() {
   const now = new Date();
-  tasks.forEach(task => {
-    const taskTime = new Date(task.date + 'T' + task.time);
+  const upcoming = tasks.filter(task => {
+    const taskTime = new Date(`${task.date}T${task.time}`);
     const timeLeft = taskTime - now;
-    if (!task.completed && timeLeft > 0 && timeLeft <= 3600000) {
-      alert(`Upcoming Task: "${task.name}" at ${task.time}`);
-    }
+    return !task.completed && timeLeft > 0 && timeLeft <= 3600000;
   });
+
+  if (upcoming.length > 0) {
+    upcoming.forEach(task => {
+      alert(`Upcoming Task: "${task.name}" at ${task.time}`);
+    });
+  }
 }
 
-if (addTaskBtn) addTaskBtn.addEventListener("click", addTask);
+if (addTaskBtn) {
+  addTaskBtn.addEventListener("click", addTask);
+}
 
 window.onload = function () {
   renderTasks();
   notifyUpcomingTasks();
 };
+
 
     
   
