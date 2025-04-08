@@ -27,22 +27,22 @@
 
   <!-- Task Input -->
   <section class="task-input-section fade-in">
-    <input type="text" id="taskName" placeholder="Task name" required />
+    <input type="text" id="taskInput" placeholder="Task name" required />
     <input type="date" id="taskDate" required />
     <input type="time" id="taskTime" required />
-    <button onclick="addTask()">Add Task</button>
+    <button id="addTaskBtn">Add Task</button>
   </section>
 
   <!-- Task Lists -->
   <section class="task-lists fade-in">
     <div class="pending-tasks">
       <h3>Pending Tasks</h3>
-      <div id="pendingList"></div>
+      <div id="pendingTasks"></div>
     </div>
 
     <div class="completed-tasks">
       <h3>Completed Tasks</h3>
-      <div id="completedList"></div>
+      <div id="completedTasks"></div>
     </div>
   </section>
 
@@ -56,3 +56,5 @@
   <script src="script.js"></script>
 </body>
 </html>
+
+
