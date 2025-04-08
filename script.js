@@ -1,87 +1,99 @@
-// ===== User Sign-In Management =====
-function saveUser() {
-  const username = document.getElementById("username").value.trim();
-  if (username) {
-    localStorage.setItem("spm_user", username);
-    window.location.href = "index.html";
-  } else {
-    alert("Please enter your name to sign in.");
-  }
-}
+// script.js - Smart Productivity Manager
 
-function checkUser() {
-  const username = localStorage.getItem("spm_user");
-  if (!username && !window.location.href.includes("signin.html")) {
+// ===== User Sign-In Check =====
+window.addEventListener("DOMContentLoaded", () => {
+  const currentPage = window.location.pathname.split("/").pop();
+  const user = localStorage.getItem("spmUser");
+
+  if (!user && currentPage !== "signin.html") {
     window.location.href = "signin.html";
+  } else if (user && currentPage === "signin.html") {
+    window.location.href = "task_manager.html";
   }
-}
-if (!window.location.href.includes("signin.html")) {
-  checkUser();
-}
 
-// ===== Task Manager Logic =====
-const taskInput = document.getElementById("taskName");
-const dateInput = document.getElementById("taskDate");
-const timeInput = document.getElementById("taskTime");
-const pendingTasksContainer = document.getElementById("pendingList");
-const completedTasksContainer = document.getElementById("completedList");
-const productivityScore = document.getElementById("productivityScore");
+  if (document.getElementById("taskName")) {
+    renderTasks();
+    notifyUpcomingTasks();
+  }
+});
 
+// ===== Task Variables =====
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+// ===== Save Tasks =====
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+// ===== Add Task =====
 function addTask() {
-  const name = taskInput?.value.trim();
-  const date = dateInput?.value;
-  const time = timeInput?.value;
+  const nameInput = document.getElementById("taskName");
+  const dateInput = document.getElementById("taskDate");
+  const timeInput = document.getElementById("taskTime");
 
-  if (name && date && time) {
-    const newTask = {
-      id: Date.now(),
-      name,
-      date,
-      time,
-      completed: false
-    };
-    tasks.push(newTask);
-    saveTasks();
-    renderTasks();
-    taskInput.value = "";
-    dateInput.value = "";
-    timeInput.value = "";
-  } else {
+  const name = nameInput.value.trim();
+  const date = dateInput.value;
+  const time = timeInput.value;
+
+  if (!name || !date || !time) {
     alert("Please fill in all fields.");
+    return;
   }
+
+  const newTask = {
+    id: Date.now(),
+    name,
+    date,
+    time,
+    completed: false
+  };
+
+  tasks.push(newTask);
+  saveTasks();
+  renderTasks();
+
+  nameInput.value = "";
+  dateInput.value = "";
+  timeInput.value = "";
 }
 
+// ===== Render Tasks =====
 function renderTasks() {
-  if (pendingTasksContainer) pendingTasksContainer.innerHTML = "";
-  if (completedTasksContainer) completedTasksContainer.innerHTML = "";
+  const pendingList = document.getElementById("pendingList");
+  const completedList = document.getElementById("completedList");
+  const productivityScore = document.getElementById("productivityScore");
 
-  tasks.sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time));
+  if (!pendingList || !completedList) return;
 
-  tasks.forEach(task => {
-    const taskEl = document.createElement("div");
-    taskEl.classList.add("task-item");
+  pendingList.innerHTML = "";
+  completedList.innerHTML = "";
+
+  const sortedTasks = [...tasks].sort((a, b) => {
+    return new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`);
+  });
+
+  let completedToday = 0;
+  const today = new Date().toISOString().split("T")[0];
+
+  sortedTasks.forEach(task => {
+    const taskBox = document.createElement("div");
+    taskBox.className = "task-item";
 
     const now = new Date();
-    const taskTime = new Date(task.date + 'T' + task.time);
+    const taskTime = new Date(`${task.date}T${task.time}`);
     const diff = taskTime - now;
 
     if (task.completed) {
-      taskEl.classList.add("completed");
+      taskBox.classList.add("completed");
     } else if (diff < 3600000) {
-      taskEl.classList.add("urgent");
+      taskBox.classList.add("urgent");
     } else if (diff < 86400000) {
-      taskEl.classList.add("moderate");
+      taskBox.classList.add("moderate");
     } else {
-      taskEl.classList.add("low");
+      taskBox.classList.add("low");
     }
 
-    taskEl.innerHTML = `
+    taskBox.innerHTML = `
       <span>${task.name} - ${task.time} (${task.date})</span>
       <div>
         <button class="complete-btn" onclick="completeTask(${task.id})">✓</button>
@@ -90,15 +102,19 @@ function renderTasks() {
     `;
 
     if (task.completed) {
-      completedTasksContainer?.appendChild(taskEl);
+      completedList.appendChild(taskBox);
+      if (task.date === today) completedToday++;
     } else {
-      pendingTasksContainer?.appendChild(taskEl);
+      pendingList.appendChild(taskBox);
     }
   });
 
-  updateProductivity();
+  if (productivityScore) {
+    productivityScore.textContent = `Today’s Productivity: ${completedToday} task(s) completed.`;
+  }
 }
 
+// ===== Complete Task =====
 function completeTask(id) {
   const index = tasks.findIndex(t => t.id === id);
   if (index !== -1) {
@@ -108,39 +124,26 @@ function completeTask(id) {
   }
 }
 
+// ===== Delete Task =====
 function deleteTask(id) {
   tasks = tasks.filter(t => t.id !== id);
   saveTasks();
   renderTasks();
 }
 
-function updateProductivity() {
-  const today = new Date().toISOString().split("T")[0];
-  const completedToday = tasks.filter(t => t.completed && t.date === today);
-  if (productivityScore) {
-    productivityScore.textContent = `Today’s Productivity: ${completedToday.length} task(s) completed.`;
-  }
-}
-
+// ===== Notification for Upcoming Tasks =====
 function notifyUpcomingTasks() {
   const now = new Date();
   tasks.forEach(task => {
-    const taskTime = new Date(task.date + 'T' + task.time);
+    if (task.completed) return;
+    const taskTime = new Date(`${task.date}T${task.time}`);
     const timeLeft = taskTime - now;
-    if (!task.completed && timeLeft > 0 && timeLeft <= 3600000) {
+    if (timeLeft > 0 && timeLeft <= 3600000) {
       alert(`Upcoming Task: "${task.name}" at ${task.time}`);
     }
   });
 }
 
-// ===== On Page Load =====
-window.onload = () => {
-  renderTasks();
-  notifyUpcomingTasks();
-};
-
-// Optional: Add listener to Add Task button
-document.getElementById("addTaskBtn")?.addEventListener("click", addTask);
 
 
 
