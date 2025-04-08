@@ -1,5 +1,3 @@
-// script.js - Smart Productivity Manager
-
 // ===== User Sign-In Check =====
 window.addEventListener("DOMContentLoaded", () => {
   const currentPage = window.location.pathname.split("/").pop();
@@ -12,6 +10,10 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   if (document.getElementById("taskName")) {
+    // Attach event listener to button
+    const addBtn = document.getElementById("addTaskBtn");
+    if (addBtn) addBtn.addEventListener("click", addTask);
+
     renderTasks();
     notifyUpcomingTasks();
   }
@@ -131,7 +133,7 @@ function deleteTask(id) {
   renderTasks();
 }
 
-// ===== Notification for Upcoming Tasks =====
+// ===== Notify Upcoming Tasks =====
 function notifyUpcomingTasks() {
   const now = new Date();
   tasks.forEach(task => {
@@ -143,6 +145,7 @@ function notifyUpcomingTasks() {
     }
   });
 }
+
 
 
 
