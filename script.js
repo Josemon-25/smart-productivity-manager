@@ -138,7 +138,90 @@ if (addTaskBtn) {
 window.onload = () => {
   renderTasks();
   notifyUpcomingTasks();
+};const taskInput = document.getElementById("taskInput");
+const taskDate = document.getElementById("taskDate");
+const taskTime = document.getElementById("taskTime");
+const addTaskBtn = document.getElementById("addTaskBtn");
+const pendingTasks = document.getElementById("pendingTasks");
+const completedTasks = document.getElementById("completedTasks");
+
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function renderTasks() {
+  pendingTasks.innerHTML = "";
+  completedTasks.innerHTML = "";
+
+  tasks.forEach(task => {
+    const taskEl = document.createElement("div");
+    taskEl.classList.add("task-item");
+    taskEl.innerHTML = `
+      <span>${task.name} - ${task.time} (${task.date})</span>
+      <button onclick="toggleComplete(${task.id})">✓</button>
+      <button onclick="deleteTask(${task.id})">🗑</button>
+    `;
+
+    if (task.completed) {
+      completedTasks.appendChild(taskEl);
+    } else {
+      pendingTasks.appendChild(taskEl);
+    }
+  });
+}
+
+function addTask() {
+  const name = taskInput.value.trim();
+  const date = taskDate.value;
+  const time = taskTime.value;
+
+  if (!name || !date || !time) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  const newTask = {
+    id: Date.now(),
+    name,
+    date,
+    time,
+    completed: false
+  };
+
+  tasks.push(newTask);
+  saveTasks();
+  renderTasks();
+
+  taskInput.value = "";
+  taskDate.value = "";
+  taskTime.value = "";
+}
+
+function toggleComplete(id) {
+  const task = tasks.find(t => t.id === id);
+  if (task) {
+    task.completed = !task.completed;
+    saveTasks();
+    renderTasks();
+  }
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  saveTasks();
+  renderTasks();
+}
+
+if (addTaskBtn) {
+  addTaskBtn.addEventListener("click", addTask);
+}
+
+window.onload = () => {
+  renderTasks();
 };
+
 
 
 
