@@ -6,21 +6,29 @@ document.addEventListener("DOMContentLoaded", function () {
   const taskDate = document.getElementById("taskDate");
   const taskTime = document.getElementById("taskTime");
   const pendingTasksDiv = document.getElementById("pendingTasks");
+  const completedTasksDiv = document.getElementById("completedTasks");
 
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
   function renderTasks() {
     pendingTasksDiv.innerHTML = "";
+    completedTasksDiv.innerHTML = "";
 
     tasks.forEach((task, index) => {
-      if (!task.completed) {
-        const taskDiv = document.createElement("div");
-        taskDiv.className = "task-item";
-        taskDiv.innerHTML = `
-          ${task.name} - ${task.date} ${task.time}
-          <button class="complete-btn" data-index="${index}">✓</button>
-          <button class="delete-btn" data-index="${index}">🗑</button>
-        `;
+      const taskDiv = document.createElement("div");
+      taskDiv.className = "task-item";
+      taskDiv.innerHTML = `
+        ${task.name} - ${task.date} ${task.time}
+        ${!task.completed ? 
+          `<button class="complete-btn" data-index="${index}">✓</button>` : 
+          ""
+        }
+        <button class="delete-btn" data-index="${index}">🗑</button>
+      `;
+
+      if (task.completed) {
+        completedTasksDiv.appendChild(taskDiv);
+      } else {
         pendingTasksDiv.appendChild(taskDiv);
       }
     });
