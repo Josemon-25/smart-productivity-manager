@@ -15,7 +15,6 @@ function checkUser() {
     window.location.href = "signin.html";
   }
 }
-
 if (!window.location.href.includes("signin.html")) {
   checkUser();
 }
@@ -35,9 +34,9 @@ function saveTasks() {
 }
 
 function addTask() {
-  const name = taskInput.value.trim();
-  const date = dateInput.value;
-  const time = timeInput.value;
+  const name = taskInput?.value.trim();
+  const date = dateInput?.value;
+  const time = timeInput?.value;
 
   if (name && date && time) {
     const newTask = {
@@ -91,9 +90,9 @@ function renderTasks() {
     `;
 
     if (task.completed) {
-      if (completedTasksContainer) completedTasksContainer.appendChild(taskEl);
+      completedTasksContainer?.appendChild(taskEl);
     } else {
-      if (pendingTasksContainer) pendingTasksContainer.appendChild(taskEl);
+      pendingTasksContainer?.appendChild(taskEl);
     }
   });
 
@@ -117,10 +116,9 @@ function deleteTask(id) {
 
 function updateProductivity() {
   const today = new Date().toISOString().split("T")[0];
-  const todayTasks = tasks.filter(t => t.completed && t.date === today);
-  const score = todayTasks.length;
+  const completedToday = tasks.filter(t => t.completed && t.date === today);
   if (productivityScore) {
-    productivityScore.textContent = `Today’s Productivity: ${score} task(s) completed.`;
+    productivityScore.textContent = `Today’s Productivity: ${completedToday.length} task(s) completed.`;
   }
 }
 
@@ -135,11 +133,14 @@ function notifyUpcomingTasks() {
   });
 }
 
-// Call render and notifications on load
-window.onload = function () {
+// ===== On Page Load =====
+window.onload = () => {
   renderTasks();
   notifyUpcomingTasks();
 };
+
+// Optional: Add listener to Add Task button
+document.getElementById("addTaskBtn")?.addEventListener("click", addTask);
 
 
 
