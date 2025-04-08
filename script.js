@@ -16,7 +16,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     tasks.forEach((task, index) => {
       const taskDiv = document.createElement("div");
-      taskDiv.className = "task-item";
+
+      const taskDateTime = new Date(`${task.date}T${task.time}`);
+      const now = new Date();
+      let urgencyClass = "";
+
+      if (taskDateTime < now) {
+        urgencyClass = "overdue"; // red
+      } else if ((taskDateTime - now) <= 24 * 60 * 60 * 1000) {
+        urgencyClass = "soon"; // orange
+      } else {
+        urgencyClass = "later"; // green
+      }
+
+      taskDiv.className = `task-item ${!task.completed ? urgencyClass : ""}`;
       taskDiv.innerHTML = `
         ${task.name} - ${task.date} ${task.time}
         ${!task.completed ? 
