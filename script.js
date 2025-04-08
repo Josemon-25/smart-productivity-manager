@@ -11,14 +11,18 @@ function saveUser() {
 
 function checkUser() {
   const username = localStorage.getItem("spm_user");
-  if (!username && !window.location.href.includes("signin.html")) {
+  const isSigninPage = window.location.pathname.includes("signin.html");
+  if (!username && !isSigninPage) {
     window.location.href = "signin.html";
   }
 }
 
-if (!window.location.href.includes("signin.html")) {
+// Run checkUser after DOM is fully loaded
+document.addEventListener("DOMContentLoaded", () => {
   checkUser();
-}
+  renderTasks();
+  notifyUpcomingTasks();
+});
 
 // ===== Task Manager Logic =====
 const taskInput = document.getElementById("taskInput");
@@ -62,8 +66,10 @@ function addTask() {
 }
 
 function renderTasks() {
-  if (pendingTasksContainer) pendingTasksContainer.innerHTML = "";
-  if (completedTasksContainer) completedTasksContainer.innerHTML = "";
+  if (!pendingTasksContainer || !completedTasksContainer) return;
+
+  pendingTasksContainer.innerHTML = "";
+  completedTasksContainer.innerHTML = "";
 
   tasks.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
 
@@ -71,7 +77,7 @@ function renderTasks() {
     const taskEl = document.createElement("div");
     taskEl.classList.add("task-item");
     const now = new Date();
-    const taskTime = new Date(`${task.date}T${task.time}`);
+    const taskTime = new Date(task.date + 'T' + task.time);
     const diff = taskTime - now;
 
     if (task.completed) {
@@ -92,9 +98,9 @@ function renderTasks() {
       </div>
     `;
 
-    if (task.completed && completedTasksContainer) {
+    if (task.completed) {
       completedTasksContainer.appendChild(taskEl);
-    } else if (!task.completed && pendingTasksContainer) {
+    } else {
       pendingTasksContainer.appendChild(taskEl);
     }
   });
@@ -131,27 +137,19 @@ function updateProductivity() {
 
 function notifyUpcomingTasks() {
   const now = new Date();
-  const upcoming = tasks.filter(task => {
+  tasks.forEach(task => {
     const taskTime = new Date(`${task.date}T${task.time}`);
     const timeLeft = taskTime - now;
-    return !task.completed && timeLeft > 0 && timeLeft <= 3600000;
-  });
-
-  if (upcoming.length > 0) {
-    upcoming.forEach(task => {
+    if (!task.completed && timeLeft > 0 && timeLeft <= 3600000) {
       alert(`Upcoming Task: "${task.name}" at ${task.time}`);
-    });
-  }
+    }
+  });
 }
 
 if (addTaskBtn) {
   addTaskBtn.addEventListener("click", addTask);
 }
 
-window.onload = function () {
-  renderTasks();
-  notifyUpcomingTasks();
-};
 
 
     
