@@ -2,7 +2,7 @@
 function saveUser() {
   const username = document.getElementById("username").value.trim();
   if (username) {
-    localStorage.setItem("spmUser", username);
+    localStorage.setItem("spm_user", username);
     window.location.href = "index.html";
   } else {
     alert("Please enter your name to sign in.");
@@ -10,13 +10,12 @@ function saveUser() {
 }
 
 function checkUser() {
-  const username = localStorage.getItem("spmUser");
+  const username = localStorage.getItem("spm_user");
   if (!username && !window.location.href.includes("signin.html")) {
     window.location.href = "signin.html";
   }
 }
 
-// Call checkUser on all pages except signin
 if (!window.location.href.includes("signin.html")) {
   checkUser();
 }
@@ -25,7 +24,6 @@ if (!window.location.href.includes("signin.html")) {
 const taskInput = document.getElementById("taskName");
 const dateInput = document.getElementById("taskDate");
 const timeInput = document.getElementById("taskTime");
-const addTaskBtn = document.getElementById("addTaskBtn") || document.querySelector("button[onclick='addTask()']");
 const pendingTasksContainer = document.getElementById("pendingList");
 const completedTasksContainer = document.getElementById("completedList");
 const productivityScore = document.getElementById("productivityScore");
@@ -61,10 +59,8 @@ function addTask() {
 }
 
 function renderTasks() {
-  if (!pendingTasksContainer || !completedTasksContainer) return;
-
-  pendingTasksContainer.innerHTML = "";
-  completedTasksContainer.innerHTML = "";
+  if (pendingTasksContainer) pendingTasksContainer.innerHTML = "";
+  if (completedTasksContainer) completedTasksContainer.innerHTML = "";
 
   tasks.sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time));
 
@@ -95,9 +91,9 @@ function renderTasks() {
     `;
 
     if (task.completed) {
-      completedTasksContainer.appendChild(taskEl);
+      if (completedTasksContainer) completedTasksContainer.appendChild(taskEl);
     } else {
-      pendingTasksContainer.appendChild(taskEl);
+      if (pendingTasksContainer) pendingTasksContainer.appendChild(taskEl);
     }
   });
 
@@ -139,14 +135,12 @@ function notifyUpcomingTasks() {
   });
 }
 
-// Event Listener
-if (addTaskBtn) addTaskBtn.addEventListener("click", addTask);
-
-// Initial Load
+// Call render and notifications on load
 window.onload = function () {
   renderTasks();
   notifyUpcomingTasks();
 };
+
 
 
 
